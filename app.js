@@ -1,10 +1,51 @@
 "use strict";
-
-const counter = document.querySelector("#counter");
-const status = document.querySelector("#status");
-let count = 0;
-
-counter.addEventListener("click", () => {
-  count += 1;
-  status.textContent = `You clicked ${count} ${count === 1 ? "time" : "times"}.`;
+const products = [
+  { id: 'daily-matcha', name: 'The Daily Matcha', subtitle: 'A simple beginning for your everyday ritual.', tag: 'YOUR DAILY CUP', price: 28, sizes: [{ label: '30 g', price: 28 }, { label: '60 g', price: 48 }], position: '72% center' },
+  { id: 'latte-matcha', name: 'The Latte Matcha', subtitle: 'For a slow pour and your favorite milk.', tag: 'JUST ADD MILK', price: 24, sizes: [{ label: '40 g', price: 24 }, { label: '80 g', price: 42 }], position: '18% center' },
+  { id: 'ritual-set', name: 'The Ritual Set', subtitle: 'A place to begin, one bowl at a time.', tag: 'THE STARTER RITUAL', price: 58, sizes: [{ label: 'Starter set', price: 58 }], position: '90% center' }
+];
+const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+const grid = document.querySelector('#product-grid');
+grid.innerHTML = products.map(p => `<article><a class="product-photo" href="#product/${p.id}" aria-label="View ${p.name}"><img src="matcha.png" alt="Concept imagery for ${p.name}; final product photography to be supplied" loading="lazy" style="object-position:${p.position}"><span class="tag">${p.tag}</span><span class="photo-note">Concept image · sample product</span></a><div class="product-info"><div class="meta"><span>${p.sizes[0].label} · SAMPLE</span><span>${money(p.price)} USD</span></div><h3><a href="#product/${p.id}">${p.name}</a></h3><p>${p.subtitle}</p><button data-add="${p.id}" aria-label="Add ${p.name} to demo cart">Add to cart <span>+</span></button></div></article>`).join('');
+let cart = [];
+try { const saved = JSON.parse(localStorage.getItem('matcha-demo-cart') || '[]'); if (Array.isArray(saved)) cart = saved.filter(item => item && products.some(p => p.id === item.id && Number.isInteger(item.size) && p.sizes[item.size]) && Number.isInteger(item.qty) && item.qty > 0 && item.qty <= 99); } catch {}
+const cartDialog = document.querySelector('#cart-dialog');
+const infoDialog = document.querySelector('#info-dialog');
+let toastTimer;
+function toast(message) { const el = document.querySelector('#toast'); el.textContent = message; el.classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('visible'), 2500); }
+function saveCart() { try { localStorage.setItem('matcha-demo-cart', JSON.stringify(cart)); } catch {} renderCart(); }
+function add(id, size = 0) { const product = products.find(p => p.id === id); if (!product || !product.sizes[size]) return; const existing = cart.find(item => item.id === id && item.size === size); if (existing) existing.qty = Math.min(99, existing.qty + 1); else cart.push({ id, size, qty: 1 }); saveCart(); toast(`${product.name} added to your bag`); }
+function renderCart() {
+  document.querySelector('#bag-count').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
+  document.querySelector('#cart-items').innerHTML = cart.length ? cart.map((item, index) => { const p = products.find(p => p.id === item.id); const size = p.sizes[item.size]; return `<div class="cart-item"><div><h3>${p.name}</h3><p>${size.label} · ${money(size.price)} each</p><div class="quantity"><button data-qty="${index}" data-step="-1" aria-label="Decrease ${p.name} quantity">−</button><span aria-label="Quantity">${item.qty}</span><button data-qty="${index}" data-step="1" aria-label="Increase ${p.name} quantity">+</button><button class="remove" data-remove="${index}">Remove</button></div></div><strong>${money(size.price * item.qty)}</strong></div>`; }).join('') : '<p>Your bag is waiting for a little green.</p><a class="text-link" href="#shop" data-close>Explore the collection →</a>';
+  document.querySelector('#cart-total').textContent = money(cart.reduce((sum, item) => sum + products.find(p => p.id === item.id).sizes[item.size].price * item.qty, 0));
+  document.querySelector('#checkout').disabled = !cart.length;
+  document.querySelector('#checkout-status').textContent = '';
+}
+function route() {
+  const slug = location.hash.startsWith('#product/') ? location.hash.slice(9) : null;
+  const product = products.find(p => p.id === slug);
+  const page = document.querySelector('#product-view');
+  document.querySelector('#home-view').hidden = Boolean(product); page.hidden = !product;
+  if (product) {
+    document.title = `${product.name} — [Brand Name]`;
+    page.innerHTML = `<a class="breadcrumb" href="#shop">← Back to the collection</a><div class="product-layout"><div><div class="gallery-frame"><img id="gallery-image" class="gallery-main" src="matcha.png" alt="${product.name} concept still life" style="object-position:${product.position}"></div><div class="thumbs" role="group" aria-label="Product gallery"><button data-gallery="center" aria-pressed="true" aria-label="View full ritual"><img src="matcha.png" alt="Full ritual composition"></button><button data-gallery="left" aria-pressed="false" aria-label="View latte detail"><img src="matcha.png" style="object-position:left" alt="Latte detail"></button><button data-gallery="right" aria-pressed="false" aria-label="View matcha detail"><img src="matcha.png" style="object-position:right" alt="Matcha detail"></button></div><p class="gallery-note">Illustrative product concept. Gallery views share the same concept photograph.<br>[Replace with verified product and packaging photography.]</p></div><div class="product-detail"><p class="eyebrow">${product.tag} · SAMPLE PRODUCT</p><h1>${product.name}</h1><p>${product.subtitle}</p><p class="price" id="product-price">${money(product.price)} <small>USD</small></p><p class="sample-note">Illustrative price and size. Not available for purchase.</p><label for="product-size">Choose your size</label><select id="product-size">${product.sizes.map((s, i) => `<option value="${i}">${s.label} — ${money(s.price)}</option>`).join('')}</select><div class="purchase-bar"><button class="button" id="product-add">Add to cart <span>+</span></button></div><details open><summary>Flavor notes</summary><p>[Add verified tasting notes for ${product.name}.] Explore grassy, savory, or gently bitter notes in our matcha guide; actual flavor depends on the selected tea.</p></details><details><summary>Origin & ingredients</summary><p>[Add verified country, region, producer, full ingredient list, and relevant allergen information.]${product.id === 'ritual-set' ? ' [Confirm set contents and materials.]' : ''}</p></details><details><summary>How to prepare</summary><p>Sift about 2 g of matcha, add 60–80 ml water at 75–80°C, and whisk until lightly frothy. For a latte, whisk with 40 ml water and pour over 150–200 ml milk and ice. [Confirm product-specific directions.]</p></details><details><summary>Shipping & returns</summary><p>[Add shipping regions, delivery estimates, charges, return eligibility, and support contact.] Orders are not enabled for this concept store.</p></details></div></div>`;
+    document.querySelector('#product-size').addEventListener('change', e => { document.querySelector('#product-price').innerHTML = `${money(product.sizes[Number(e.target.value)].price)} <small>USD</small>`; });
+    document.querySelector('#product-add').addEventListener('click', () => add(product.id, Number(document.querySelector('#product-size').value)));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  } else { document.title = '[Brand Name] — Your daily green'; const target = document.getElementById(location.hash.slice(1) || 'home'); if (target && location.hash) requestAnimationFrame(() => target.scrollIntoView({ behavior: 'instant' })); }
+}
+document.addEventListener('click', e => {
+  const addButton = e.target.closest('[data-add]'); if (addButton) add(addButton.dataset.add);
+  if (e.target.closest('[data-cart]')) { renderCart(); cartDialog.showModal(); }
+  if (e.target.closest('[data-close]')) { cartDialog.close(); infoDialog.close(); }
+  const quantity = e.target.closest('[data-qty]'); if (quantity) { const item = cart[Number(quantity.dataset.qty)]; item.qty = Math.min(99, item.qty + Number(quantity.dataset.step)); cart = cart.filter(i => i.qty > 0); saveCart(); }
+  const remove = e.target.closest('[data-remove]'); if (remove) { cart.splice(Number(remove.dataset.remove), 1); saveCart(); }
+  const thumb = e.target.closest('[data-gallery]'); if (thumb) { const image = document.querySelector('#gallery-image'); image.style.objectPosition = thumb.dataset.gallery; image.style.transformOrigin = thumb.dataset.gallery; image.style.transform = thumb.dataset.gallery === 'center' ? 'scale(1)' : 'scale(1.4)'; document.querySelectorAll('[data-gallery]').forEach(b => b.setAttribute('aria-pressed', String(b === thumb))); }
+  const policy = e.target.closest('[data-policy]'); if (policy) { const name = policy.dataset.policy; const copy = { Contact: '[Add your customer service email, business address, and support hours.]', 'Shipping & returns': '[Add shipping regions, delivery estimates, costs, return window, refund process, and contact details.]', Privacy: '[Add your business privacy policy before collecting customer information.] This preview stores only your demo bag in this browser. Newsletter submissions are not stored or sent. Fonts load from Google Fonts.', Terms: '[Add your business terms of sale and website terms.] This is a concept storefront; no purchases or payments are processed.', Instagram: '[Add your official Instagram profile URL.]', TikTok: '[Add your official TikTok profile URL.]' }; document.querySelector('#info-title').textContent = name; document.querySelector('#info-copy').textContent = copy[name]; infoDialog.showModal(); }
 });
+document.querySelector('#checkout').addEventListener('click', () => { document.querySelector('#checkout-status').textContent = 'Checkout is not connected yet. [Add your payment provider and finalize products, shipping, and policies before accepting orders.] No payment has been taken.'; });
+document.querySelector('#newsletter-form').addEventListener('submit', e => { e.preventDefault(); document.querySelector('#newsletter-status').textContent = 'Thanks for stopping by. Newsletter signup is a preview — your email has not been saved or sent.'; e.target.reset(); });
+for (const dialog of [cartDialog, infoDialog]) dialog.addEventListener('click', e => { if (e.target === dialog) { const rect = dialog.getBoundingClientRect(); if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) dialog.close(); } });
+document.querySelector('#year').textContent = new Date().getFullYear();
+window.addEventListener('hashchange', route); renderCart(); route();
