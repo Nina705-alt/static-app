@@ -1,34 +1,35 @@
-# Matcha storefront concept
+# Dog-food storefront concept
 
 Live site: https://nina705-alt.github.io/static-app/
 
-A responsive static storefront built with HTML, CSS, and JavaScript. GitHub Pages publishes the repository root on `main`.
+Responsive HTML, CSS, and JavaScript storefront hosted by GitHub Pages from the root of `main`. No build step or package installation is needed. Open `index.html`, or serve this directory with a static HTTP server.
 
-## Run
+## Included
 
-Open `index.html` or serve this directory with a static HTTP server. No build or installation is required.
+- Warm cream, green, and orange design with generated dog and packaging concept photography.
+- Four illustrative products: dry food, wet food, treats, and fresh meals.
+- Combined life-stage, food-type, protein, and starting-price filters; reset and empty-result states.
+- Product detail routes, two-image galleries, size selection, transparent stock placeholders, and mobile sticky add-to-cart.
+- Persistent demo cart with quantity controls and removal. A separate storage key avoids retaining the previous matcha cart.
+- Product-specific feeding-guide templates with units but no invented nutritional values or portions.
+- Story, FAQs, inactive subscription information, policy/contact placeholders, and a preview newsletter form.
 
-## Features
+## Required before launch as a real store
 
-- Homepage, sample collection, brand story, brewing guide, and FAQ.
-- Shareable product detail routes: `#product/daily-matcha`, `#product/latte-matcha`, and `#product/ritual-set`.
-- Concept image gallery, selectable sizes, persistent demo bag, quantity controls, and a mobile sticky add-to-cart button.
-- Accessible dialogs, keyboard focus styles, reduced-motion support, and responsive layouts.
-- Newsletter and checkout are explicitly labeled previews. No email or payment is collected.
+Supply the brand name, audience, verified product specifications, ingredients, nutrition panels, life-stage suitability, feeding directions, stock, prices/currency, delivery rules, sourcing/production facts, policies, contacts, and social URLs. Replace concept imagery with actual product photography.
 
-## Before selling
-
-Replace `[Brand Name]` and all bracketed business details. Confirm products, sizes, currency, prices, tasting notes, ingredients, allergens, sourcing, shipping, returns, contacts, social URLs, and policies. Replace concept photography with actual product photographs. Connect a commerce provider and mailing-list service before accepting orders or collecting emails. The demo cart is stored only in localStorage. Fonts are served by Google Fonts.
+Checkout is not connected to a payment provider. A configured commerce/checkout service is needed; do not embed secret credentials in this static site. Subscriptions are inactive until supported plans and a management/cancellation portal exist. No orders, emails, or payments are collected by this preview. Cart data stays in this browser's localStorage; fonts load from Google Fonts.
 
 ## Files
 
-- `index.html`: content and page sections
-- `styles.css`: design and responsive layouts
-- `app.js`: sample product data, routes, and demo interactions
-- `matcha.png`: AI-generated illustrative concept photography
-- `image-prompt.md`: asset provenance and generation prompt
-- `data/sample.json`: legacy fictional project data, unused by the storefront
+- `index.html`: page sections and dialogs
+- `styles.css`: responsive styling, focus indicators, reduced-motion support
+- `app.js`: illustrative catalog, combined filters, routes, feeding templates, cart
+- `dog-hero.png` and `dog-products.png`: AI-generated illustrative assets
+- `dog-image-prompts.md`: built-in image generation prompts and provenance
 
-## Checks
+Previous matcha assets and legacy sample data are unused by the current site.
 
-JavaScript syntax checked with `node --check app.js`. Browser checks cover desktop and 390 px mobile layouts, product routes, size prices, cart quantity totals/removal, placeholder checkout, newsletter feedback, and mobile sticky purchasing controls.
+## Validation
+
+`node --check app.js`; browser checks for combined filters, empty states/reset, size selection, cart quantities/removal and persistence, checkout messaging, product-specific feeding templates, newsletter feedback, and responsive layouts.
