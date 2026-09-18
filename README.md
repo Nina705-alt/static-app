@@ -1,35 +1,44 @@
-# Dog-food storefront concept
+# The Shared Table
 
 Live site: https://nina705-alt.github.io/static-app/
 
-Responsive HTML, CSS, and JavaScript storefront hosted by GitHub Pages from the root of `main`. No build step or package installation is needed. Open `index.html`, or serve this directory with a static HTTP server.
+A responsive midday-meal initiative website concept. The Shared Table is a creative concept name, not a claim that a registered organization or operational program exists. USD is the example currency. All operational, financial, impact, and organizational details await verification.
+
+## Run and deploy
+
+Open `index.html`, or serve this directory using a static HTTP server. No package installation or build step is needed. GitHub Pages deploys the repository root from `main`.
 
 ## Included
 
-- Warm cream, green, and orange design with generated dog and packaging concept photography.
-- Four illustrative products: dry food, wet food, treats, and fresh meals.
-- Combined life-stage, food-type, protein, and starting-price filters; reset and empty-result states.
-- Product detail routes, two-image galleries, size selection, transparent stock placeholders, and mobile sticky add-to-cart.
-- Persistent demo cart with quantity controls and removal. A separate storage key avoids retaining the previous matcha cart.
-- Product-specific feeding-guide templates with units but no invented nutritional values or portions.
-- Story, FAQs, inactive subscription information, policy/contact placeholders, and a preview newsletter form.
+- Homepage with donation and volunteer calls to action.
+- Program overview, expense reporting template, impact metrics with reporting-date placeholders, fundraising goal template, and story/photo placeholders.
+- One-time/monthly example donation selection, preset/custom amounts, native amount validation, and a review dialog showing the amount and frequency before any potential payment.
+- Volunteer, business sponsorship, and contact enquiry previews. Only email is required; first name, message, and business name are optional. No phone, address, or sensitive beneficiary information is collected.
+- Transparency, policy placeholders, FAQs, and clearly unavailable reports/social links.
+- Original lightweight SVG meal illustration. No beneficiary photographs, identifying details, testimonials, affiliations, endorsements, or unverifiable statistics.
+- Responsive layouts, keyboard-accessible dialogs, visible focus styles, labeled forms, and reduced-motion support. System fonts avoid external font requests.
 
-## Required before launch as a real store
+## What remains inactive
 
-Supply the brand name, audience, verified product specifications, ingredients, nutrition panels, life-stage suitability, feeding directions, stock, prices/currency, delivery rules, sourcing/production facts, policies, contacts, and social URLs. Replace concept imagery with actual product photography.
+No payment processor or form-delivery service is connected. Donation review does not create a payment or subscription. Confirmation content explains what a future verified payment confirmation must include; it does not fabricate a receipt or successful donation. Enquiry previews are not sent or stored, and entered values are cleared after preview submission. Form submission buttons remain disabled if JavaScript fails to load.
 
-Checkout is not connected to a payment provider. A configured commerce/checkout service is needed; do not embed secret credentials in this static site. Subscriptions are inactive until supported plans and a management/cancellation portal exist. No orders, emails, or payments are collected by this preview. Cart data stays in this browser's localStorage; fonts load from Google Fonts.
+## Required before accepting donations
+
+1. Confirm the organizing entity, concept name, public contacts, service area, community description, and preparation/distribution process.
+2. Supply verified costs, expense totals, reporting dates, impact totals and counting methods, fundraising goal, and source reports.
+3. Confirm currency and donation policies. Connect a verified payment provider with secure server-side verification, actual one-time and recurring payment flows, post-payment confirmation, receipts, refunds, and cancellation management. Never expose secret credentials in the browser.
+4. Connect an appropriate enquiry service and publish the approved privacy and retention policy before collecting entries.
+5. Replace story and photograph placeholders only with accurate, consent-approved material. Do not identify children or publish sensitive personal information.
 
 ## Files
 
-- `index.html`: page sections and dialogs
-- `styles.css`: responsive styling, focus indicators, reduced-motion support
-- `app.js`: illustrative catalog, combined filters, routes, feeding templates, cart
-- `dog-hero.png` and `dog-products.png`: AI-generated illustrative assets
-- `dog-image-prompts.md`: built-in image generation prompts and provenance
+- `index.html`: sections, forms, and accessible dialogs
+- `styles.css`: responsive design
+- `app.js`: local-only preview interactions
+- `shared-table.svg`: original vector illustration, not program photography
 
-Previous matcha assets and legacy sample data are unused by the current site.
+Previous storefront assets remain unused by this site.
 
 ## Validation
 
-`node --check app.js`; browser checks for combined filters, empty states/reset, size selection, cart quantities/removal and persistence, checkout messaging, product-specific feeding templates, newsletter feedback, and responsive layouts.
+JavaScript syntax check; desktop and 390 px mobile visual review; preset and custom amounts; zero-amount rejection; monthly and one-time review accuracy; enquiry category switching, optional business field, and field clearing; disabled real payment; no horizontal overflow; loaded SVG asset.
